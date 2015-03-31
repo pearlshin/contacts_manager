@@ -30,6 +30,7 @@
       tagName: "article",
       className: "contact-container",
       template: _.template($("#contactTemplate").html()),
+      editTemplate: _.template($("#contactEditTemplate").html()),
 
       render: function(){
           $(this.el).html(this.template(this.model.toJSON()));
@@ -37,7 +38,11 @@
       },
 
       events: {
-        "click button.delete": "deleteContact"
+        "click button.delete": "deleteContact",
+        "click button.edit": "editContact",
+        "change select.type": "addType",
+        "click button.save": "saveEdits",
+        "click button.cancel": "cancelEdit"
       },
 
       deleteContact: function() {
@@ -50,7 +55,66 @@
         if (_.indexOf(directory.getTypes(), removedType) === -1) {
           directory.$el.find("#filter select").children("[value = '" + removedType + "']").remove();
         }
+      },
+
+      editContact: function() {
+        this.$el.html(this.editTemplate(this.model.toJSON()));
+
+        var newOpt = $("<option/>", {
+          html: "Add new...",
+          value: "addType"
+        });
+
+        this.select = directory.createSelect().addClass("type").val(this.$el.find("#type").val()).append(newOpt).insertAfter(this.$el.find(".name"));
+
+        this.$el.find("input[type='hidden']").remove();
+      },
+
+      addType: function () {
+            if (this.select.val() === "addType") {
+              this.select.remove();
+
+              $("<input />", {
+                "class": "type"
+              }).insertAfter(this.$el.find(".name")).focus();
+            }
+          },
+
+      saveEdits: function (e) {
+          e.preventDefault();
+
+          var formData = {},
+              prev = this.model.previousAttributes();
+
+          $(e.target).closest("form").find(":input").not(".button").each(function () {
+
+              var el = $(this);
+              formData[el.attr("class")] = el.val();
+          });
+
+          if (formData.photo === "") {
+              delete formData.photo;
+          }
+
+          this.model.set(formData);
+
+          this.render();
+
+          if (prev.photo === "img/placeholder.png") {
+              delete prev.photo;
+          }
+
+          _.each(contacts, function (contact) {
+              if (_.isEqual(contact, prev)) {
+                  contacts.splice(_.indexOf(contacts, contact), 1, formData);
+              }
+          });
+      },
+
+      cancelEdit: function () {
+          this.render();
       }
+
   });
 
   var DirectoryView = Backbone.View.extend({

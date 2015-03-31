@@ -48,7 +48,7 @@
         this.remove();
 
         if (_.indexOf(directory.getTypes(), removedType) === -1) {
-          directory.$el.find("#filter select").children("[value = '" + removedType + "']").remove();)
+          directory.$el.find("#filter select").children("[value = '" + removedType + "']").remove();
         }
       }
   });
@@ -63,7 +63,7 @@
       this.on("change:filterType", this.filterByType, this);
       this.collection.on("reset", this.render, this);
       this.collection.on("add", this.renderContact, this);
-      this.collection.on("remove", this.removeContact, this);
+      this.collection.on("remove", this.removeContact, this)
     },
 
     render: function(){
@@ -103,8 +103,9 @@
     },
 
     events: {
-      "change #filter select": "setFilter" //to filter the view when option is selected
-      "click #add": "addContact"
+      "change #filter select": "setFilter", //to filter the view when option is selected
+      "click #add": "addContact",
+      "click #showForm": "showForm"
     },
 
     setFilter: function(event) {
@@ -133,20 +134,39 @@
       event.preventDefault();
 
       var newModel = {};
-      $("#addcontact").children("input").each(function(i, el) {
+      $("#addContact").children("input").each(function(i, el) {
         if ($(el).val() !== "") {
           newModel[el.id] = $(el).val();
         }
       });
 
-      contacts.push(formData);
+      contacts.push(newModel);
 
-      if (_.indexOf(this.getTypes(), formData.type) === -1) {
-        this.collection.add(new Contact(formData));
+      if (_.indexOf(this.getTypes(), newModel.type) === -1) {
+        this.collection.add(new Contact(newModel));
         this.$el.find("#filter").find("select").remove().end().append(this.createSelect());
       } else {
-        this.collection.add(new Contact(formData));
+        this.collection.add(new Contact(newModel));
       }
+    },
+
+    removeContact: function(model) {
+    var removed = model.attributes;
+
+    if (removed.photo === "/img/placeholder.png") {
+      delete removed.photo;
+    }
+
+    _.each(contacts, function(contact) {
+      if (_.isEqual(contact, removed)) {
+        contacts.splice(_.indexOf(contacts, contact), 1);
+      }
+    });
+  },
+
+
+    showForm: function () {
+    this.$el.find("#addContact").slideToggle();
     }
 
   });
@@ -160,6 +180,7 @@
       directory.filterType = type;
       directory.trigger("change:filterType");
     }
+
   });
 
   var directory = new DirectoryView();

@@ -14,6 +14,11 @@
   var Contact = Backbone.Model.extend({
       defaults: {
           photo: "img/placeholder.png"
+          name: "",
+          address: "",
+          tel: "",
+          email: "",
+          type: ""
       }
   });
 

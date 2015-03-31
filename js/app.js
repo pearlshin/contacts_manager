@@ -38,6 +38,7 @@
     initialize: function(){
       this.collection = new Directory(contacts);
       this.render();
+      this.$el.find(#filter).append(this.createSelect());
     },
 
     render: function(){

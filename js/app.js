@@ -52,6 +52,27 @@
         model: item
       });
       this.$el.append(contactView.render().el);
+    },
+
+    getTypes: function() {
+      return _.uniq(this.collection.pluck("type"), false, function (type) {
+        return type.toLowerCase();
+      });
+    },
+
+    createSelect: function() {
+      var filter = this.el.find("#filter"),
+        select = $("<select/>", {
+          html: "<option>All</option>"
+        });
+
+        _.each(this.getTypes(), function(item) {
+          var option = $("<option/>", {
+            value: item.toLowerCase(),
+            text: item.toLowerCase()
+          }).appendTo(select);
+        });
+        return select;
     }
   });
 

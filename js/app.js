@@ -80,6 +80,27 @@
       "change #filter select": "setFilter"
     }, //to filter the view when option is selected
 
+    setFilter: function(event) {
+      this.filterType = event.currentTarget.value;
+      this.trigger("change:filterType");
+    },
+
+    filterByType: function() {
+      if (this.filterType === "all") {
+        this.collection.reset(contacts);
+        contactsRouter.navigate("filter/all");
+      } else {
+        this.collection.reset(contacts, {silent: true});
+
+        var filterType = this.filterType, filtered = _.filter(this.collection.models, function(item) {
+          return item.get("type") === filterType;
+        });
+        this. collection.reset(filtered);
+
+        contactsRouter.navigate("filter/" + filterType);
+      }
+    }
+
   });
 
   var directory = new DirectoryView();

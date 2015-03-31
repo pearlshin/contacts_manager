@@ -39,6 +39,8 @@
       this.collection = new Directory(contacts);
       this.render();
       this.$el.find(#filter).append(this.createSelect());
+      this.on("change:filterType", this.filterByType, this);
+      this.collection.on("reset", this.render, this);
     },
 
     render: function(){
@@ -103,6 +105,19 @@
 
   });
 
+  var ContactsRouter = Backbone.Router.extend({
+    routes: {
+      "filter/:type": "urlFilter"
+    },
+
+    urlFilter: function(type) {
+      directory.filterType = type;
+      directory.trigger("change:filterType");
+    }
+  });
+
   var directory = new DirectoryView();
+  var contactsRouter = new ContactsRouter();
+  Backbone.history.start();
 
 } (jQuery));

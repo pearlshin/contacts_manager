@@ -74,7 +74,12 @@
           }).appendTo(select);
         });
         return select;
-    }
+    },
+
+    events: {
+      "change #filter select": "setFilter"
+    }, //to filter the view when option is selected
+
   });
 
   var directory = new DirectoryView();

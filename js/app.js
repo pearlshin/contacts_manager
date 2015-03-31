@@ -38,12 +38,13 @@
     initialize: function(){
       this.collection = new Directory(contacts);
       this.render();
-      this.$el.find(#filter).append(this.createSelect());
+      this.$el.find("#filter").append(this.createSelect());
       this.on("change:filterType", this.filterByType, this);
       this.collection.on("reset", this.render, this);
     },
 
     render: function(){
+      this.$el.find("article").remove();
       var self = this;
       _.each(this.collection.models, function(item){
         self.renderContact(item);
@@ -54,7 +55,7 @@
       var contactView = new ContactView({
         model: item
       });
-      this.$el.append(contactView.render().el);
+      $(this.el).append(contactView.render().el);
     },
 
     getTypes: function() {
@@ -64,9 +65,9 @@
     },
 
     createSelect: function() {
-      var filter = this.el.find("#filter"),
+      var filter = this.$el.find("#filter"),
         select = $("<select/>", {
-          html: "<option>All</option>"
+          html: "<option>all</option>"
         });
 
         _.each(this.getTypes(), function(item) {
@@ -94,7 +95,8 @@
       } else {
         this.collection.reset(contacts, {silent: true});
 
-        var filterType = this.filterType, filtered = _.filter(this.collection.models, function(item) {
+        var filterType = this.filterType,
+          filtered = _.filter(this.collection.models, function(item) {
           return item.get("type") === filterType;
         });
         this. collection.reset(filtered);

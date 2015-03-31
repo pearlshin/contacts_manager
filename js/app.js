@@ -34,6 +34,22 @@
       render: function(){
           $(this.el).html(this.template(this.model.toJSON()));
           return this;
+      },
+
+      events: {
+        "click button.delete": "deleteContact"
+      },
+
+      deleteContact: function() {
+        var removedType = this.model.get("type").toLowerCase();
+
+        this.model.destroy();
+
+        this.remove();
+
+        if (_.indexOf(directory.getTypes(), removedType) === -1) {
+          directory.$el.find("#filter select").children("[value = '" + removedType + "']").remove();)
+        }
       }
   });
 
@@ -47,6 +63,7 @@
       this.on("change:filterType", this.filterByType, this);
       this.collection.on("reset", this.render, this);
       this.collection.on("add", this.renderContact, this);
+      this.collection.on("remove", this.removeContact, this);
     },
 
     render: function(){

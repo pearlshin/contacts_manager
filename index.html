@@ -32,8 +32,22 @@
                 <dt>Tel:</dt><dd><%= tel %></dd>
                 <dt>Email:</dt><dd><a href="mailto:<%= email %>"><%= email %></a></dd>
             </dl>
+            <button class="edit">Edit</button><br>
+            <button class="delete">Delete</button><br>
         </script>
 
+        <script id="contactEditTemplate" type="text/template">
+                    <form action="#">
+                    <input type="file" value="<%= photo %>" />
+                    <input class="name" value="<%= name %>" />
+                    <input id="type" type="hidden" value="<%= type %>" />
+                    <input class="address" value="<%= address %>" />
+                    <input class="tel" value="<%= tel %>" />
+                    <input class="email" value="<%= email %>" />
+                    <button class="save">Save</button>
+                    <button class="cancel">Cancel</button>
+                    </form>
+                </script>
 
 
         <script src="js/jquery-1.7.1.min.js"></script>

@@ -46,6 +46,7 @@
       this.$el.find("#filter").append(this.createSelect());
       this.on("change:filterType", this.filterByType, this);
       this.collection.on("reset", this.render, this);
+      this.collection.on("add", this.renderContact, this);
     },
 
     render: function(){
@@ -85,8 +86,9 @@
     },
 
     events: {
-      "change #filter select": "setFilter"
-    }, //to filter the view when option is selected
+      "change #filter select": "setFilter" //to filter the view when option is selected
+      "click #add": "addContact"
+    },
 
     setFilter: function(event) {
       this.filterType = event.currentTarget.value;
@@ -107,6 +109,26 @@
         this. collection.reset(filtered);
 
         contactsRouter.navigate("filter/" + filterType);
+      }
+    },
+
+    addContact: function(event) {
+      event.preventDefault();
+
+      var newModel = {};
+      $("#addcontact").children("input").each(function(i, el) {
+        if ($(el).val() !== "") {
+          newModel[el.id] = $(el).val();
+        }
+      });
+
+      contacts.push(formData);
+
+      if (_.indexOf(this.getTypes(), formData.type) === -1) {
+        this.collection.add(new Contact(formData));
+        this.$el.find("#filter").find("select").remove().end().append(this.createSelect());
+      } else {
+        this.collection.add(new Contact(formData));
       }
     }
 
